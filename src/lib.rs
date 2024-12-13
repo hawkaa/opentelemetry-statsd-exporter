@@ -194,6 +194,14 @@ impl StatsdExporter {
             }
             count_builder.send();
 
+            // Export sum value
+            let sum_name = format!("{}.sum", name);
+            let mut sum_builder = self.client.gauge_with_tags(&sum_name, datapoint.sum);
+            for (key, value) in &tags {
+                sum_builder = sum_builder.with_tag(key.as_str(), value.as_str());
+            }
+            sum_builder.send();
+
             // Calculate and export p95
             if let Some(p95) =
                 calculate_percentile(&datapoint.bucket_counts, &datapoint.bounds, 0.95)
