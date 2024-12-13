@@ -1,0 +1,16 @@
+[package]
+name = "opentelemetry-statsd-exporter"
+version = "0.1.0"
+edition = "2021"
+authors = ["Håkon Åmdal <hakon@goldsky.com>"]
+description = "StatsD exporter for OpenTelemetry metrics"
+license = "MIT"
+repository = "https://github.com/hawkaa/opentelemetry-statsd-exporter"
+
+[dependencies]
+async-trait = "0.1"
+cadence = "1.5"
+opentelemetry = "0.27"
+opentelemetry_sdk = "0.27"
+thiserror = "2"
+tracing = "0.1"
