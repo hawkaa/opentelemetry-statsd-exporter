@@ -53,14 +53,14 @@ impl StatsdExporter {
     /// ```no_run
     /// use opentelemetry_statsd_exporter::StatsdExporter;
     ///
-    /// let exporter = StatsdExporter::new("localhost".to_string()).expect("Failed to create exporter");
+    /// let exporter = StatsdExporter::new("localhost".to_string(), "namespace").expect("Failed to create exporter");
     /// ```
-    pub fn new(host: String) -> Result<Self, StatsdError> {
+    pub fn new(host: String, namespace: &str) -> Result<Self, StatsdError> {
         let socket = UdpSocket::bind("0.0.0.0:0")?;
         socket.set_nonblocking(true)?;
 
         let sink = UdpMetricSink::from((host.as_str(), 8125), socket)?;
-        let client = StatsdClient::from_sink("balances_api", sink);
+        let client = StatsdClient::from_sink(namespace, sink);
 
         Ok(Self { client })
     }
@@ -263,14 +263,14 @@ mod tests {
     use super::*;
     #[test]
     fn test_new_exporter() {
-        let result = StatsdExporter::new("localhost".to_string());
+        let result = StatsdExporter::new("localhost".to_string(), "ns");
         assert!(result.is_ok());
     }
     //
     // Error cases
     #[test]
     fn test_invalid_host() {
-        let result = StatsdExporter::new("256.256.256.256".to_string());
+        let result = StatsdExporter::new("256.256.256.256".to_string(), "ns");
         assert!(result.is_err());
         match result {
             Err(StatsdError::SinkCreation(_)) => (),
